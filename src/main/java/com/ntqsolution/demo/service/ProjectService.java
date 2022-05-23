@@ -9,9 +9,9 @@ import java.util.Optional;
 public interface ProjectService {
     List<ProjectDTO> getAllProject();
 
-    Project findProjectById(Long id);
+    ProjectDTO findProjectById(Long id);
 
-    Project saveOrUpdateProject(Project project);
+    void saveOrUpdateProject(ProjectDTO projectDTO);
 
-    void deleteProject(Project project);
+    void deleteProject(ProjectDTO projectDTO);
 }

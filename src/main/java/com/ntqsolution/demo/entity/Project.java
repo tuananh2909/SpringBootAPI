@@ -35,7 +35,7 @@ public class Project {
     private LocalDate startDate;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "end_date", nullable = false)
+    @Column(name = "end_date")
     private LocalDate endDate;
 
     @JsonIgnore

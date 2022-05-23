@@ -28,18 +28,21 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project findProjectById(Long id) {
+    public ProjectDTO findProjectById(Long id) {
         Optional<Project> projectOptional = projectRepository.findById(id);
-        return projectOptional.orElseGet(Project::new);
+        Project project = projectOptional.orElseGet(Project::new);
+        return mapper.map(project, new ProjectDTO().getClass());
     }
 
     @Override
-    public Project saveOrUpdateProject(Project project) {
-        return projectRepository.saveAndFlush(project);
+    public void saveOrUpdateProject(ProjectDTO projectDTO) {
+        projectRepository.saveAndFlush(mapper.map(projectDTO, new Project().getClass()));
     }
 
     @Override
-    public void deleteProject(Project project) {
-        projectRepository.delete(project);
+    public void deleteProject(ProjectDTO projectDTO) {
+        projectRepository.delete(mapper.map(projectDTO, new Project().getClass()));
     }
+
+
 }

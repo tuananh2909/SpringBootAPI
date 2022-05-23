@@ -15,17 +15,14 @@ import java.util.Optional;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
-    EmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     private final ModelMapper mapper = new ModelMapper();
 
     @Override
     public List<EmployeeDTO> getAllEmployee() {
         List<Employee> employeeList = employeeRepository.findAll();
-
-        List<EmployeeDTO> employeeDTOS = mapper.map(employeeList, new TypeToken<List<EmployeeDTO>>() {
-        }.getType());
-
+        List<EmployeeDTO> employeeDTOS = mapper.map(employeeList, new TypeToken<List<EmployeeDTO>>() {}.getType());
         return employeeDTOS;
     }
 
@@ -34,5 +31,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<Employee> employeeOptional = employeeRepository.findById(id);
         Employee employee = employeeOptional.orElseGet(Employee::new);
         return mapper.map(employee, new EmployeeDTO().getClass());
+    }
+
+    @Override
+    public void saveOrUpdateEmployee(EmployeeDTO employeeDTO) {
+        employeeRepository.saveAndFlush(mapper.map(employeeDTO, new Employee().getClass()));
+    }
+
+    @Override
+    public void deleteEmployee(EmployeeDTO employeeDTO) {
+        employeeRepository.delete(mapper.map(employeeDTO, new Employee().getClass()));
     }
 }

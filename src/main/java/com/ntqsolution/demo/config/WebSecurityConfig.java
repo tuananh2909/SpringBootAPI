@@ -35,9 +35,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .roles(PROJECT_MANAGER.name())
                 .build();
 
+        UserDetails adminUser = User.builder()
+                .username("admin")
+                .password("admin")
+                .roles(ADMIN.name())
+                .build();
+
         return new InMemoryUserDetailsManager(
                 employeeUser,
-                projectUser
+                projectUser,
+                adminUser
         );
     }
 
@@ -46,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/","/hello").permitAll()
+                .antMatchers("/", "/hello").permitAll()
                 .antMatchers("/api/employees/**").hasRole(EMPLOYEE_MANAGER.name())
                 .antMatchers("/api/projects/**").hasRole(PROJECT_MANAGER.name())
                 .anyRequest().authenticated()
