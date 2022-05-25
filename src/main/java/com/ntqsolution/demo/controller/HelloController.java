@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
     @GetMapping("/hello")
     public ResponseEntity<String> hello() {
-        return ResponseEntity.ok("Login successful");
+        return ResponseEntity.ok("Welcome to my project!!!");
+    }
+
+    @GetMapping("/home")
+    public ResponseEntity<?> home() {
+        return ResponseEntity.ok("Welcome to home project");
     }
 }

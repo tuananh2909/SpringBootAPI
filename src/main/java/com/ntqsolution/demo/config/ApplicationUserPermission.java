@@ -1,10 +1,10 @@
 package com.ntqsolution.demo.config;
 
 public enum ApplicationUserPermission {
-    PROJECT_LIST("project:list"),
-    PROJECT_DETAILS("project:details"),
-    EMPLOYEE_LIST("employee:list"),
-    EMPLOYEE_DETAILS("employee:details");
+    PROJECT_READ("project:read"),
+    PROJECT_WRITE("project:write"),
+    EMPLOYEE_READ("employee:read"),
+    EMPLOYEE_WRITE("employee:write");
 
     private final String permission;
 

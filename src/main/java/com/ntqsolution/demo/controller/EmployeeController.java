@@ -8,6 +8,7 @@ import com.ntqsolution.demo.service.StatusEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +26,13 @@ public class EmployeeController {
 
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE_MANAGER')")
     public ResponseEntity<?> getAllEmployee() {
         try {
             List<EmployeeDTO> employees = employeeService.getAllEmployee();
             if (employees.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else if (Objects.isNull(employees)) {
+            } else if (employees == null) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(employees, HttpStatus.OK);
@@ -40,6 +42,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE_MANAGER')")
     public ResponseEntity<?> getEmployeeById(@PathVariable("id") Long id) {
         try {
             EmployeeDTO employee = employeeService.findEmployeeById(id);
@@ -53,6 +56,7 @@ public class EmployeeController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('employee:write')")
     public ResponseEntity<?> createEmployee(@Validated @RequestBody EmployeeDTO employeeDTO) {
         try {
             if (employeeDTO == null) {
@@ -71,13 +75,16 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('employee:write')")
     public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id) {
         try {
             EmployeeDTO employeeDTO = employeeService.findEmployeeById(id);
             if (employeeDTO == null || employeeDTO.getId() == null) {
                 return new ResponseEntity<>(new ResponseMessage("Employee is null!!!", null), HttpStatus.NOT_FOUND);
             }
-            employeeService.deleteEmployee(employeeDTO);
+            employeeDTO.setIsOut(true);
+            employeeService.saveOrUpdateEmployee(employeeDTO);
+            //employeeService.deleteEmployee(employeeDTO);
             return new ResponseEntity<>("Delete successfully", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ResponseMessage("Delete failed!!!", null), HttpStatus.GATEWAY_TIMEOUT);
@@ -86,6 +93,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('employee:write')")
     public ResponseEntity<?> editEmployee(@PathVariable("id") Long id, @Validated @RequestBody EmployeeDTO employeeDTO) {
         try {
             EmployeeDTO oldEmployee = employeeService.findEmployeeById(id);
