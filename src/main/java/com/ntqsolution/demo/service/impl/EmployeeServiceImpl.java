@@ -22,7 +22,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<EmployeeDTO> getAllEmployee() {
         List<Employee> employeeList = employeeRepository.findAll();
-        List<EmployeeDTO> employeeDTOS = mapper.map(employeeList, new TypeToken<List<EmployeeDTO>>() {}.getType());
+        List<EmployeeDTO> employeeDTOS = mapper.map(employeeList, new TypeToken<List<EmployeeDTO>>() {
+        }.getType());
         return employeeDTOS;
     }
 
@@ -41,5 +42,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteEmployee(EmployeeDTO employeeDTO) {
         employeeRepository.delete(mapper.map(employeeDTO, new Employee().getClass()));
+    }
+
+    @Override
+    public List<EmployeeDTO> searchEmployees(String query) {
+        List<Employee> employees = employeeRepository.searchEmployeesByName(query);
+        List<EmployeeDTO> employeeDtos = mapper.map(employees, new TypeToken<List<EmployeeDTO>>() {
+        }.getType());
+        return employeeDtos;
     }
 }

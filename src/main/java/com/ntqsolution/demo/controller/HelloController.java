@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("")
 public class HelloController {
@@ -14,7 +16,8 @@ public class HelloController {
     }
 
     @GetMapping("/home")
-    public ResponseEntity<?> home() {
+    public ResponseEntity<?> home(HttpServletRequest request) {
+        System.out.println(request.isUserInRole("ROLE_ADMIN"));
         return ResponseEntity.ok("Welcome to home project");
     }
 }

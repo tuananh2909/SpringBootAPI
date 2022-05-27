@@ -23,21 +23,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Qualifier("myUserDetailsService")
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder);
-        provider.setUserDetailsService(userDetailsService);
-        return provider;
-    }
+//    @Bean
+//    public DaoAuthenticationProvider daoAuthenticationProvider() {
+//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+//        provider.setPasswordEncoder(passwordEncoder);
+//        provider.setUserDetailsService(userDetailsService);
+//        return provider;
+//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(daoAuthenticationProvider());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
 //    @Bean
@@ -82,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers(HttpMethod.POST, "/api/employees/**").hasAuthority(EMPLOYEE_WRITE.getPermission())
 //                .antMatchers(HttpMethod.PUT, "/api/employees/**").hasAuthority(EMPLOYEE_WRITE.getPermission())
 //                .antMatchers(HttpMethod.DELETE, "/api/employees/**").hasAuthority(EMPLOYEE_WRITE.getPermission())
-                .antMatchers("/api/employees/**", "/employees/**").hasAnyRole("EMPLOYEE_MANAGER", "ADMIN")
+                .antMatchers("/api/employees", "/api/employees/**", "/employees/**").hasAnyRole("EMPLOYEE_MANAGER", "ADMIN")
                 .antMatchers("/api/projects/**", "/projects/**").hasAnyRole("PROJECT_MANAGER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
@@ -95,7 +96,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
                     .key("somethingVerySecured")
                 .and()
-                .logout();
+                .logout()
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID","remember-me","XSRF-TOKEN");
 
     }
 }

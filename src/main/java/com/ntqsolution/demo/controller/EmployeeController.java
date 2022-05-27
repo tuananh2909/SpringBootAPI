@@ -25,8 +25,7 @@ public class EmployeeController {
     private StatusEmployeeService statusEmployeeService;
 
 
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE_MANAGER')")
+    @GetMapping("")
     public ResponseEntity<?> getAllEmployee() {
         try {
             List<EmployeeDTO> employees = employeeService.getAllEmployee();
@@ -42,7 +41,6 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE_MANAGER')")
     public ResponseEntity<?> getEmployeeById(@PathVariable("id") Long id) {
         try {
             EmployeeDTO employee = employeeService.findEmployeeById(id);
@@ -56,7 +54,6 @@ public class EmployeeController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('employee:write')")
     public ResponseEntity<?> createEmployee(@Validated @RequestBody EmployeeDTO employeeDTO) {
         try {
             if (employeeDTO == null) {
@@ -75,7 +72,6 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('employee:write')")
     public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id) {
         try {
             EmployeeDTO employeeDTO = employeeService.findEmployeeById(id);
@@ -93,7 +89,6 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('employee:write')")
     public ResponseEntity<?> editEmployee(@PathVariable("id") Long id, @Validated @RequestBody EmployeeDTO employeeDTO) {
         try {
             EmployeeDTO oldEmployee = employeeService.findEmployeeById(id);
@@ -113,5 +108,8 @@ public class EmployeeController {
         }
     }
 
-
+    @GetMapping("/search")
+    public ResponseEntity<?> searchEmployeesByName(@RequestParam("query") String query){
+        return ResponseEntity.ok(employeeService.searchEmployees(query));
+    }
 }
